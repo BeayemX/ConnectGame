@@ -3,7 +3,7 @@ package game;
 public class Controller implements ViewListener {
 
 	private Model model;
-	// TODO brauch ich das nicht?
+	// TODO brauch ich die view nicht?
 //	private View view;
 	private Evaluator evaluator;
 
@@ -15,6 +15,10 @@ public class Controller implements ViewListener {
 	
 	@Override
 	public boolean update(int col) {
+		if(col == -1){
+			System.out.println("computer gegner");
+			col = evaluator.getAIRow();
+		}
 		if (setIsPossible(col)) {
 			
 			int row = getRow(col);
@@ -78,7 +82,7 @@ public class Controller implements ViewListener {
 		
 		for( int i = minCheck; i <= maxCheck; ++i){
 			
-			if( model.getDisc(i, row) == model.getPlayer() ){
+			if( model.getDisc(i, row) == model.getCurrPlayer() ){
 				++winCounter;
 			} else {
 				winCounter = 0;
@@ -96,9 +100,9 @@ public class Controller implements ViewListener {
 		// check downwards
 		if(row + ( model.getWinLength()-1 ) < model.getRows()){
 			if(
-				model.getDisc(col, row+1) == model.getPlayer() && 
-				model.getDisc(col, row+2) == model.getPlayer() &&
-				model.getDisc(col, row+3) == model.getPlayer()  
+				model.getDisc(col, row+1) == model.getCurrPlayer() && 
+				model.getDisc(col, row+2) == model.getCurrPlayer() &&
+				model.getDisc(col, row+3) == model.getCurrPlayer()  
 			){
 			return true;
 			}
@@ -121,7 +125,7 @@ public class Controller implements ViewListener {
 			
 			if( isInsideBoard(x, y)){
 				
-				if( model.getDisc(x, y) == model.getPlayer() ){
+				if( model.getDisc(x, y) == model.getCurrPlayer() ){
 					++winCounter;
 				} else {
 					winCounter = 0;
@@ -150,7 +154,7 @@ public class Controller implements ViewListener {
 			
 			if( isInsideBoard(x, y)){
 				
-				if( model.getDisc(x, y) == model.getPlayer() ){
+				if( model.getDisc(x, y) == model.getCurrPlayer() ){
 					++winCounter;
 				} else {
 					winCounter = 0;
@@ -165,7 +169,7 @@ public class Controller implements ViewListener {
 	}
 	
 	private void gameOver(){
-		System.out.println("Game over. Player " + model.getPlayer() + " won.");
+		System.out.println("Game over. Player " + model.getCurrPlayer() + " won.");
 		model.setGameOver(true);
 	}
 	

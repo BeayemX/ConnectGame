@@ -10,6 +10,7 @@ public class Model {
 	private int curPlayer;
 	private int[][] board;
 	private ArrayList<ModelListener> modelListener = new ArrayList<ModelListener>();
+	private ArrayList<Integer> AIPlayers= new ArrayList<Integer>();
 	private boolean gameOver = false; 
 	
 	Model(int col, int row){
@@ -38,10 +39,14 @@ public class Model {
 		this.curPlayer = id;
 	}
 	
-	public int getPlayer(){
+	public int getCurrPlayer(){
 		return this.curPlayer;
 	}
 	
+	public ArrayList<Integer> getAIPlayers() {
+		return AIPlayers;
+	}
+
 	public void setModelListener(ModelListener listener){
 		modelListener.add(listener);
 	}
@@ -78,5 +83,17 @@ public class Model {
 
 	public void setGameOver(boolean gameOver) {
 		this.gameOver = gameOver;
+	}
+	
+	public void setAIPlayer(int PlayerID){
+		if( (PlayerID > 0) && (PlayerID <= this.MAX_PLAYER) ){
+			AIPlayers.add(PlayerID);
+		} else {
+			System.out.println("PlayerID is out of possible Range");
+		}
+	}
+	
+	public int getMaxPlayers(){
+		return this.MAX_PLAYER;
 	}
 }

@@ -8,9 +8,12 @@ public class MVC_Test {
 		
 		Model m = new Model(7, 5);
 		ConsoleView v = new ConsoleView(m);
-		Evaluator e = new Evaluator();
-		Controller c = new Controller(m, v, e);
+		// TODO ai_view not used yet
 		AiView aiV = new AiView(m);
+		Evaluator e = new Evaluator(m);
+		Controller c = new Controller(m, v, e);
+		
+		m.setAIPlayer(2);
 		
 
 		System.out.println(m.getWinLength() + " in a Row");
