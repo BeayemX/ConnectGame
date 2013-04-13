@@ -6,14 +6,22 @@ public class MVC_Test {
 
 	public static void main(String[] args) throws IOException {
 		
-		System.out.println("test");
 		Model m = new Model(7, 5);
 		ConsoleView v = new ConsoleView(m);
-		Controller c = new Controller(m, v);
+		Evaluator e = new Evaluator();
+		Controller c = new Controller(m, v, e);
+		AiView aiV = new AiView(m);
 		
 
-		m.setModelListener(v);
+		System.out.println(m.getWinLength() + " in a Row");
+		
+		// register views inside model
+		m.setModelListener(v); 		// console view
+		m.setModelListener(aiV); 	// ai view
+		
+		// register controller inside view
 		v.setListener(c);
+		aiV.setListener(c);
 		
 		v.printBoard();
 		

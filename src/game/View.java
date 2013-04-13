@@ -1,13 +1,21 @@
 package game;
 
-public abstract class View implements Modellistener{
+import java.util.ArrayList;
 
-	Model model; 
+public abstract class View implements ModelListener{
+
+	protected Model model; 
+	protected ArrayList <ViewListener> listener = new ArrayList<ViewListener>();
+	
 	
 	public View(Model m){
 		this.model = m;
 	}
 
+	public void setListener(ViewListener l){
+		listener.add(l);
+	}
+	
 	@Override
 	public abstract void update();
 		

@@ -1,6 +1,6 @@
 package game;
 
-public interface Modellistener {
+public interface ModelListener {
 
 	public void update();
 }

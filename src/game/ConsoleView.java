@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class ConsoleView extends View {
-
-	ArrayList <ViewListener> listener = new ArrayList<ViewListener>();
 	
 	public ConsoleView(Model m){
 		super(m);
@@ -46,6 +44,8 @@ public class ConsoleView extends View {
 	}
 	
 	public void getInput() throws IOException{
+		// die methode is ultra crap
+		// exception bei eingabe von buchstaben oder NULL
 		System.out.println("Row? " + model.getPlayer() +": ");
 		BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 		
@@ -56,8 +56,5 @@ public class ConsoleView extends View {
 		for (ViewListener l : listener){
 			l.update(col);
 		}
-	}
-	public void setListener(ViewListener l){
-		listener.add(l);
 	}
 }

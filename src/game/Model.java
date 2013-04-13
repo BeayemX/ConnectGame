@@ -4,14 +4,12 @@ import java.util.ArrayList;
 
 public class Model {
 
-//	private static final int BOARD_COLS = 7;
-//	private static final int BOARD_ROWS = 5;
 	private static final int MAX_PLAYER = 2;
 	private static final int ROW_WIN_LENGTH = 4;
 	
 	private int curPlayer;
 	private int[][] board;
-	private ArrayList<Modellistener> modelListener = new ArrayList<Modellistener>();
+	private ArrayList<ModelListener> modelListener = new ArrayList<ModelListener>();
 	private boolean gameOver = false; 
 	
 	Model(int col, int row){
@@ -44,12 +42,12 @@ public class Model {
 		return this.curPlayer;
 	}
 	
-	public void setModelListener(Modellistener listener){
+	public void setModelListener(ModelListener listener){
 		modelListener.add(listener);
 	}
 	
 	public void updateListeners(){
-		for (Modellistener mL: modelListener){
+		for (ModelListener mL: modelListener){
 			mL.update();
 		}
 	}

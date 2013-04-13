@@ -2,12 +2,15 @@ package game;
 
 public class Controller implements ViewListener {
 
-	Model model;
-	View view;
+	private Model model;
+	// TODO brauch ich das nicht?
+//	private View view;
+	private Evaluator evaluator;
 
-	public Controller(Model m, View v){
+	public Controller(Model m, View v, Evaluator e){
 		this.model = m;
-		this.view = v;
+//		this.view = v;
+		this.evaluator = e;
 	}
 	
 	@Override
@@ -32,7 +35,7 @@ public class Controller implements ViewListener {
 	public boolean setIsPossible(int col) {
 		return model.getDisc(col,0) == 0;
 	}
-	
+
 	public int getRow(int col){
 		for (int row = 1; row < model.getRows(); ++row){
 			if (model.getDisc(col, row) != 0){
