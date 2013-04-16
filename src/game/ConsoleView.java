@@ -51,7 +51,7 @@ public class ConsoleView extends View {
 		
 		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 		
-		if( this.isAIPlayer() ){
+		if( !this.isAIPlayer() ){
 //			TODO da den evaluator? ka...
 //			Evaluator.4
 			col = -1;

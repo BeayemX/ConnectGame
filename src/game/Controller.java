@@ -35,6 +35,10 @@ public class Controller implements ViewListener {
 			return false;
 		}
 	}
+	
+	public void waitForInput(){
+		
+	}
 
 	public boolean setIsPossible(int col) {
 		return model.getDisc(col,0) == 0;
