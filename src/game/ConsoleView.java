@@ -44,26 +44,37 @@ public class ConsoleView extends View {
 	}
 	
 	public void getInput() throws IOException{
-		// die methode is ultra crap
-		// exception bei eingabe von buchstaben oder NULL
+		System.out.println("Row? " + model.getCurrentPlayer() +": ");
 		
-		int col=0;
+		int col=-1;
+		boolean invalidInput = true;
+		
+		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 		
 		if( this.isAIPlayer() ){
 //			TODO da den evaluator? ka...
 //			Evaluator.4
 			col = -1;
-			
+
 		} else {
 			
-			System.out.println("Row? " + model.getCurrPlayer() +": ");
-			BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
-			
-			// TODO use numbers >9. ... -48 --> ugly
-			col = input.read() - 48;
+			while (invalidInput) {
+				
+				String line = console.readLine();
+				
+				try {
+					
+					col = Integer.parseInt(line);
+					if (col >= 0 && col < model.getCols()){
+						invalidInput = false;
+					}
+					
+				} catch (Exception e) {
+					invalidInput = true;
+				}
+			}
 		}
 		
-
 		for (ViewListener l : listener){
 			l.update(col);
 		}
@@ -74,7 +85,7 @@ public class ConsoleView extends View {
 		for( int id : model.getAIPlayers() ){
 			
 			// TODO wär's schneller wenn man die vorher in einer variable speichert, weil man dann nicht immer die methode aufrufen muss?
-			if(model.getCurrPlayer() == id){
+			if(model.getCurrentPlayer() == id){
 				return true;
 			}
 		}

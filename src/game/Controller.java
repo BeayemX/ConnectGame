@@ -82,7 +82,7 @@ public class Controller implements ViewListener {
 		
 		for( int i = minCheck; i <= maxCheck; ++i){
 			
-			if( model.getDisc(i, row) == model.getCurrPlayer() ){
+			if( model.getDisc(i, row) == model.getCurrentPlayer() ){
 				++winCounter;
 			} else {
 				winCounter = 0;
@@ -100,9 +100,9 @@ public class Controller implements ViewListener {
 		// check downwards
 		if(row + ( model.getWinLength()-1 ) < model.getRows()){
 			if(
-				model.getDisc(col, row+1) == model.getCurrPlayer() && 
-				model.getDisc(col, row+2) == model.getCurrPlayer() &&
-				model.getDisc(col, row+3) == model.getCurrPlayer()  
+				model.getDisc(col, row+1) == model.getCurrentPlayer() && 
+				model.getDisc(col, row+2) == model.getCurrentPlayer() &&
+				model.getDisc(col, row+3) == model.getCurrentPlayer()  
 			){
 			return true;
 			}
@@ -125,7 +125,7 @@ public class Controller implements ViewListener {
 			
 			if( isInsideBoard(x, y)){
 				
-				if( model.getDisc(x, y) == model.getCurrPlayer() ){
+				if( model.getDisc(x, y) == model.getCurrentPlayer() ){
 					++winCounter;
 				} else {
 					winCounter = 0;
@@ -154,7 +154,7 @@ public class Controller implements ViewListener {
 			
 			if( isInsideBoard(x, y)){
 				
-				if( model.getDisc(x, y) == model.getCurrPlayer() ){
+				if( model.getDisc(x, y) == model.getCurrentPlayer() ){
 					++winCounter;
 				} else {
 					winCounter = 0;
@@ -169,7 +169,7 @@ public class Controller implements ViewListener {
 	}
 	
 	private void gameOver(){
-		System.out.println("Game over. Player " + model.getCurrPlayer() + " won.");
+		System.out.println("Game over. Player " + model.getCurrentPlayer() + " won.");
 		model.setGameOver(true);
 	}
 	

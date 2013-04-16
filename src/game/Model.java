@@ -7,7 +7,7 @@ public class Model {
 	private static final int MAX_PLAYER = 2;
 	private static final int ROW_WIN_LENGTH = 4;
 	
-	private int curPlayer;
+	private int currentPlayer;
 	private int[][] board;
 	private ArrayList<ModelListener> modelListener = new ArrayList<ModelListener>();
 	private ArrayList<Integer> AIPlayers= new ArrayList<Integer>();
@@ -26,7 +26,7 @@ public class Model {
 	
 	public void setDisc(int col, int row){
 		System.out.println("Disc set at "+col+"|"+row);
-		this.board[col][row] = curPlayer;
+		this.board[col][row] = currentPlayer;
 		updateListeners();
 	}
 	
@@ -34,13 +34,13 @@ public class Model {
 		return this.board[col][row];
 	}	
 	
-	public void setPlayer(int id){
+	public void setCurrentPlayer(int id){
 		updateListeners();
-		this.curPlayer = id;
+		this.currentPlayer = id;
 	}
 	
-	public int getCurrPlayer(){
-		return this.curPlayer;
+	public int getCurrentPlayer(){
+		return this.currentPlayer;
 	}
 	
 	public ArrayList<Integer> getAIPlayers() {
@@ -66,10 +66,10 @@ public class Model {
 	}
 	
 	public void nextPlayer(){
-		if(curPlayer < MAX_PLAYER){
-			++curPlayer;
+		if(currentPlayer < MAX_PLAYER){
+			++currentPlayer;
 		} else {
-			curPlayer=1;
+			currentPlayer=1;
 		}
 	}
 	

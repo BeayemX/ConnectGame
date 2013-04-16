@@ -30,6 +30,8 @@ public class MVC_Test {
 		
 		while( !m.isGameOver() ){
 			v.getInput();
+// 			c.wait for input
+//			v.send input
 		}
 	}
 
