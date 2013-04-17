@@ -44,6 +44,7 @@ public class ConsoleView extends View {
 	}
 	
 	public void getInput() throws IOException{
+		// FIXME wenn AI auf voll besetzte col wirft, bleibt der wert und er hängt in einer endlosschleife. 
 		int col=0;
 		
 		System.out.println("Row? " + model.getCurrentPlayer() +": ");
@@ -52,7 +53,7 @@ public class ConsoleView extends View {
 		
 		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 		
-		if( !model.isCurrentPlayerIsAI() ){			
+		if( !model.isCurrentPlayerAI() ){			
 			while (invalidInput) {
 				
 				String line = console.readLine();

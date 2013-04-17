@@ -16,8 +16,7 @@ public class Controller implements ViewListener {
 	@Override
 	public boolean update(int col) {
 
-		// FIXME isSetPossible
-		if (setIsPossible(col)) {
+		if (isSetPossible(col)) {
 			
 			int row = getRow(col);
 			model.setDisc(col, row);
@@ -33,7 +32,7 @@ public class Controller implements ViewListener {
 		}
 	}
 
-	public boolean setIsPossible(int col) {
+	public boolean isSetPossible(int col) {
 		return model.getDisc(col,0) == 0;
 	}
 

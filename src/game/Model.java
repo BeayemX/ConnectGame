@@ -17,19 +17,11 @@ public class Model {
 	Model(int col, int row){
 		this.board = new int[col][row];
 		nextPlayer();
-//		for(int i=0; i< col; ++i){
-//			for(int j=0; j< row; ++j){
-//				this.board[i][j] = 0;
-//			}
-//					
-//		}
 	}
 	
 	public void setDisc(int col, int row){
 		System.out.println("Disc set at "+col+"|"+row);
 		this.board[col][row] = currentPlayer;
-		// XXX
-//		updateListeners();
 	}
 	
 	public int getDisc(int col, int row){
@@ -47,8 +39,7 @@ public class Model {
 		updateListeners();
 	}
 	
-	// FIXME ultra crap name
-	public boolean isCurrentPlayerIsAI() {
+	public boolean isCurrentPlayerAI() {
 		return currentPlayerIsAI;
 	}
 

@@ -2,7 +2,7 @@ package game;
 
 public class Evaluator {
 
-	// TODO copy of the original model to test the different possibilities
+	// TODO copy of the original model to test the different possibilities use Memento
 	private Model model;
 	
 	public Evaluator(Model m){
@@ -16,4 +16,5 @@ public class Evaluator {
 //		}
 		return (int) ( Math.random() * ( this.model.getCols() ) );
 	}
+	
 }

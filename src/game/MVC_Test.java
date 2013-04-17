@@ -7,11 +7,10 @@ public class MVC_Test {
 	public static void main(String[] args) throws IOException {
 		
 		Model m = new Model(7, 5);
-		ConsoleView v = new ConsoleView(m);
-		// TODO ai_view not used yet
+		ConsoleView consV = new ConsoleView(m);
 		AiView aiV = new AiView(m);
 		Evaluator e = new Evaluator(m);
-		Controller c = new Controller(m, v, e);
+		Controller c = new Controller(m, consV, e);
 		
 		m.setAIPlayer(2);
 		
@@ -19,17 +18,17 @@ public class MVC_Test {
 		System.out.println(m.getWinLength() + " in a Row");
 		
 		// register views inside model
-		m.setModelListener(v); 		// console view
+		m.setModelListener(consV); 		// console view
 		m.setModelListener(aiV); 	// ai view
 		
 		// register controller inside view
-		v.setListener(c);
+		consV.setListener(c);
 		aiV.setListener(c);
 		
-		v.printBoard();
+		consV.printBoard();
 		
 		while( !m.isGameOver() ){
-			v.getInput();
+			consV.getInput();
 // 			c.wait for input
 //			v.send input
 		}
