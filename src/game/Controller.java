@@ -15,29 +15,22 @@ public class Controller implements ViewListener {
 	
 	@Override
 	public boolean update(int col) {
-		if(col == -1){
-			System.out.println("computer gegner");
-			col = evaluator.getAIRow();
-		}
+
+		// FIXME isSetPossible
 		if (setIsPossible(col)) {
 			
 			int row = getRow(col);
 			model.setDisc(col, row);
-			
 			if( this.checkVictory( col, row ) ){
 				this.gameOver();
 			}
 			
-			model.nextPlayer();
+			this.model.nextPlayer();
 			return true;
 		} else {
 			System.out.println("move isn't possible");
 			return false;
 		}
-	}
-	
-	public void waitForInput(){
-		
 	}
 
 	public boolean setIsPossible(int col) {

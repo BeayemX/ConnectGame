@@ -2,15 +2,19 @@ package game;
 
 public class AiView extends View {
 
+	private Evaluator evaluator = new Evaluator(this.model);
+	
 	public AiView(Model m) {
 		super(m);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+		if( model.isCurrentPlayerIsAI() ){
+			for (ViewListener l : listener){
+				l.update( evaluator.getAICol() );
+			}	
+		}		
 	}
 
 }

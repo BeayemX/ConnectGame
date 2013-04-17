@@ -44,20 +44,15 @@ public class ConsoleView extends View {
 	}
 	
 	public void getInput() throws IOException{
+		int col=0;
+		
 		System.out.println("Row? " + model.getCurrentPlayer() +": ");
 		
-		int col=-1;
 		boolean invalidInput = true;
 		
 		BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
 		
-		if( !this.isAIPlayer() ){
-//			TODO da den evaluator? ka...
-//			Evaluator.4
-			col = -1;
-
-		} else {
-			
+		if( !model.isCurrentPlayerIsAI() ){			
 			while (invalidInput) {
 				
 				String line = console.readLine();
@@ -78,18 +73,5 @@ public class ConsoleView extends View {
 		for (ViewListener l : listener){
 			l.update(col);
 		}
-	}
-
-	private boolean isAIPlayer() {
-		
-		for( int id : model.getAIPlayers() ){
-			
-			// TODO wär's schneller wenn man die vorher in einer variable speichert, weil man dann nicht immer die methode aufrufen muss?
-			if(model.getCurrentPlayer() == id){
-				return true;
-			}
-		}
-		
-		return false;
 	}
 }

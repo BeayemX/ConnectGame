@@ -9,7 +9,7 @@ public class Evaluator {
 		this.model = m;
 	}
 	
-	public int getAIRow(){
+	public int getAICol(){
 //		for is just for testing if right returns are created
 //		for (int i=0; i<220; ++i){
 //			System.out.print( (int)( Math.random() * (this.model.getCols()) ) + ", ");

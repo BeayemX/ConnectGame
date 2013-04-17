@@ -8,6 +8,7 @@ public class Model {
 	private static final int ROW_WIN_LENGTH = 4;
 	
 	private int currentPlayer;
+	private boolean currentPlayerIsAI;;
 	private int[][] board;
 	private ArrayList<ModelListener> modelListener = new ArrayList<ModelListener>();
 	private ArrayList<Integer> AIPlayers= new ArrayList<Integer>();
@@ -27,7 +28,8 @@ public class Model {
 	public void setDisc(int col, int row){
 		System.out.println("Disc set at "+col+"|"+row);
 		this.board[col][row] = currentPlayer;
-		updateListeners();
+		// XXX
+//		updateListeners();
 	}
 	
 	public int getDisc(int col, int row){
@@ -35,10 +37,21 @@ public class Model {
 	}	
 	
 	public void setCurrentPlayer(int id){
-		updateListeners();
 		this.currentPlayer = id;
+		if( this.isAIPlayer() ) {
+			this.currentPlayerIsAI = true;
+		} else {
+			this.currentPlayerIsAI = false;
+		}
+		
+		updateListeners();
 	}
 	
+	// FIXME ultra crap name
+	public boolean isCurrentPlayerIsAI() {
+		return currentPlayerIsAI;
+	}
+
 	public int getCurrentPlayer(){
 		return this.currentPlayer;
 	}
@@ -66,10 +79,10 @@ public class Model {
 	}
 	
 	public void nextPlayer(){
-		if(currentPlayer < MAX_PLAYER){
-			++currentPlayer;
+		if(getCurrentPlayer() < MAX_PLAYER){
+			this.setCurrentPlayer(getCurrentPlayer()+1);
 		} else {
-			currentPlayer=1;
+			this.setCurrentPlayer(1);
 		}
 	}
 	
@@ -95,5 +108,17 @@ public class Model {
 	
 	public int getMaxPlayers(){
 		return this.MAX_PLAYER;
+	}
+
+	private boolean isAIPlayer() {	
+		for( int id : this.getAIPlayers() ){
+			
+			// TODO wär's schneller wenn man die vorher in einer variable speichert, weil man dann nicht immer die methode aufrufen muss?
+			if(this.getCurrentPlayer() == id){
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
