@@ -7,14 +7,6 @@ import java.util.ArrayList;
 
 public class ConsoleView extends View {
 	
-	public ConsoleView(Model m){
-		super(m);
-	}
-
-	public void update() {
-		this.printBoard();
-	}
-
 	public void printBoard() {
 
 		System.out.print("     ");
@@ -70,9 +62,6 @@ public class ConsoleView extends View {
 				}
 			}
 		}
-		
-		for (ViewListener l : listener){
-			l.update(col);
-		}
+
 	}
 }

@@ -1,19 +1,13 @@
 package game;
 
-public class Controller implements ViewListener {
+import eventSystem.Event;
+import eventSystem.EventListener;
 
-	private Model model;
-	// TODO brauch ich die view nicht?
-//	private View view;
-	private Evaluator evaluator;
+public class Controller implements EventListener {
 
-	public Controller(Model m, View v, Evaluator e){
-		this.model = m;
-//		this.view = v;
-		this.evaluator = e;
-	}
+//	private Model model; // kopier vom aktuellen spielfeld für ki?
+//	private Evaluator evaluator = new Evaluator(this.model);
 	
-	@Override
 	public boolean update(int col) {
 
 		if (isSetPossible(col)) {
@@ -176,6 +170,51 @@ public class Controller implements ViewListener {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public void handleEvent(Event event) {
+
+		switch ( event.getType() ){
+		
+			case "GameStatusUpdateEvent":
+	    		this.handleGameStatusUpdateEvent( event );
+	    		break;
+    		
+			case "CellUpdateEvent":
+	    		this.handleCellUpdateEvent( event );
+	    		break;
+
+		    case "PlayerTurnEvent":
+	    		this.handlePlayerTurnEvent( event );
+	    		break;
+	    		
+		    case "PlayerUpdateEvent":
+	    		this.handlePlayerUpdateEvent( event );
+	    		break;
+	    		
+    		default: 
+    			System.out.println(event.getType() + " hasn't been handled!");
+    			break;
+		      
+		}
+		
+	}
+
+	private void handlePlayerTurnEvent(Event event) {
+		
+	}
+
+	private void handleCellUpdateEvent(Event event) {
+		
+	}
+
+	private void handleGameStatusUpdateEvent(Event event) {
+		
+	}
+	
+	private void handlePlayerUpdateEvent(Event event) {
+		
 	}
 
 }

@@ -1,22 +1,56 @@
 package game;
 
-import java.util.ArrayList;
+import eventSystem.Event;
+import eventSystem.EventListener;
 
-public abstract class View implements ModelListener{
-
-	protected Model model; 
-	protected ArrayList <ViewListener> listener = new ArrayList<ViewListener>();
-	
-	
-	public View(Model m){
-		this.model = m;
-	}
-
-	public void setListener(ViewListener l){
-		listener.add(l);
-	}
+public abstract class View implements EventListener{
 	
 	@Override
-	public abstract void update();
+	public void handleEvent(Event event) {
+
+		switch ( event.getType() ){
+		
+			case "GameStatusUpdateEvent":
+	    		this.handleGameStatusUpdateEvent( event );
+	    		break;
+    		
+			case "CellUpdateEvent":
+	    		this.handleCellUpdateEvent( event );
+	    		break;
+
+		    case "PlayerTurnEvent":
+	    		this.handlePlayerTurnEvent( event );
+	    		break;
+	    		
+		    case "PlayerUpdateEvent":
+	    		this.handlePlayerUpdateEvent( event );
+	    		break;
+	    		
+    		default: 
+    			System.out.println(event.getType() + " hasn't been handled!");
+    			break;
+		      
+		}
+		
+	}
+
+	private void handlePlayerTurnEvent(Event event) {
+		// schreiben player x is dran
+	}
+
+	private void handleCellUpdateEvent(Event event) {
+		// darstellen
+		
+	}
+
+	private void handleGameStatusUpdateEvent(Event event) {
+		
+//		print game over
+		
+	}
+	
+	private void handlePlayerUpdateEvent(Event event) {
+		
+	}
 		
 }
