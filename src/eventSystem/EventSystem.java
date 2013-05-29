@@ -7,11 +7,10 @@ public class EventSystem {
 	private static final EventSystem instance = new EventSystem();
 	
 	private ArrayList<Event> 			activeEventList 	= new ArrayList<Event>();
-	private ArrayList<Event> 			waitingEventList	= new ArrayList<Event>();
+	private ArrayList<Event> 			inactiveEventList	= new ArrayList<Event>();
 	
-	private ArrayList<EventListener>	listenerList		= new ArrayList<EventListener>(); // every listener
-	private ArrayList<EventListener>	waitAddListenerList	= new ArrayList<EventListener>();
-	private ArrayList<EventListener>	waitDelListenerList	= new ArrayList<EventListener>();
+	private ArrayList<EventListener>	activeListenerList		= new ArrayList<EventListener>(); // every listener
+	private ArrayList<EventListener>	inactiveListenerList	= new ArrayList<EventListener>();
 	
 	// test für jedes event eine eigenen listener list?
 	private ArrayList<EventListener>	cellUpdateList			= new ArrayList<EventListener>();
@@ -27,38 +26,32 @@ public class EventSystem {
 	}
 	
 	public void addListener(EventListener listener) {
-		waitAddListenerList.add(listener);
+		inactiveListenerList.add(listener);
 	}
 
 	public void removeListener(EventListener listener) {
-		waitDelListenerList.add(listener);
+		inactiveListenerList.remove(listener);
 	}
 
 	public void queueEvent(Event event) {
-		waitingEventList.add(event);
+		inactiveEventList.add(event);
 	}
 
-	public void update() {
+	public void dispatchEvent(Event event){
+		inactiveEventList.remove(event);
+	}
 	
-		// add remove waiting listeners before throwing events
-		for (EventListener l : waitDelListenerList){
-			listenerList.remove(l);
-		}
-		
-		for (EventListener l : waitAddListenerList){
-			listenerList.add(l);
-		}
+	public void update() {
 
-		// clear lists
-		waitAddListenerList	= new ArrayList<EventListener>();
-		waitDelListenerList	= new ArrayList<EventListener>();
+		activeListenerList = (ArrayList<EventListener>) inactiveListenerList.clone();
+//		activeListenerList = inactiveListenerList;
 	
 		// throw all events
-		this.activeEventList = waitingEventList;
-		waitingEventList = new ArrayList<Event>();
+		this.activeEventList = inactiveEventList;
+		inactiveEventList = new ArrayList<Event>();
 		
 		for ( Event e : activeEventList){
-			
+
 //			switch ( e.getType() ){
 //			
 //				case "GameStatusEvent":
@@ -89,7 +82,7 @@ public class EventSystem {
 //			    	break;
 //			}
 //		
-			for ( EventListener l : listenerList){
+			for ( EventListener l : activeListenerList){
 				l.handleEvent(e);	
 			}
 		}

@@ -14,7 +14,7 @@ public class Evaluator {
 //		for (int i=0; i<220; ++i){
 //			System.out.print( (int)( Math.random() * (this.model.getCols()) ) + ", ");
 //		}
-		return (int) ( Math.random() * ( this.model.getCols() ) );
+		return (int) ( Math.random() * ( this.model.numOfColumns() ) );
 	}
 	
 }

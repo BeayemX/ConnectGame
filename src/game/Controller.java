@@ -2,59 +2,81 @@ package game;
 
 import eventSystem.Event;
 import eventSystem.EventListener;
+import eventSystem.EventSystem;
+import eventSystem.events.CellUpdateEvent;
+import eventSystem.events.GameStatusUpdateEvent;
+import eventSystem.events.PlayerUpdateEvent;
 
-public class Controller implements EventListener {
+public class Controller  {
 
-//	private Model model; // kopier vom aktuellen spielfeld für ki?
+	private static final EventSystem eventSystem = EventSystem.getInstance();
+	private Model model;
+	int cellsToConnect;;
 //	private Evaluator evaluator = new Evaluator(this.model);
 	
-	public boolean update(int col) {
-
-		if (isSetPossible(col)) {
-			
-			int row = getRow(col);
-			model.setDisc(col, row);
-			if( this.checkVictory( col, row ) ){
-				this.gameOver();
-			}
-			
-			this.model.nextPlayer();
-			return true;
-		} else {
-			System.out.println("move isn't possible");
-			return false;
-		}
+	Controller(Model model){
+		this(model, 4);
 	}
+	Controller(Model model, int cellsToConnect){
+		this.model = model;
+		this.cellsToConnect = cellsToConnect;
+	}
+	
+//	public boolean update(int col) {
+//		if (isSetPossible(col)) {
+//			
+//			int row = getRowDepth(col);
+//
+//			model.setCell(col, row);
+//			eventSystem.queueEvent( new CellUpdateEvent(model.saveToMemento()));
+//
+////			if( this.checkVictory( col, row ) ){
+////			if( this.isWinning(currentplayer)){ // aber woher?
+//				/// XXX throw event
+////				this.gameOver();
+////			}
+//			// XXX throw event
+////			this.model.nextPlayer();
+//			return true;
+//		} else {
+//			// XXX throw event?
+//			System.out.println("move isn't possible");
+//			return false;
+//		}
+//	}
 
 	public boolean isSetPossible(int col) {
-		return model.getDisc(col,0) == 0;
+		// XXX ... iwie muss ich da auf die logik zugreifen... ODER  model als member?
+		return model.getCell(col,0) == CellState.EMPTY;
 	}
 
-	public int getRow(int col){
-		for (int row = 1; row < model.getRows(); ++row){
-			if (model.getDisc(col, row) != 0){
+	// get lowest possible position in the specific col
+	public int getRowDepth(int col){
+		// XXX Memento?
+		for (int row = 1; row < model.numOfRows(); ++row){
+			if (model.getCell(col, row) != CellState.EMPTY){
 				return row-1;
 			}
 		}
-		return model.getRows()-1; // if whole col is empty, return the lowest position
+		return model.numOfRows()-1; // if whole col is empty, return the lowest position
 	}
 	
-	private boolean checkVictory(int col, int row){
+	private boolean isWinning(CellState player, int col, int row){
 		
 		// we dont have to check the (col, row) because there has to be currentPlayer because he set the disc there
 		if(
-			checkHorizontal(col, row) || 
-			checkVertical(col, row) ||
-			checkDiagonalAscending(col, row) ||
-			checkDiagonalDescending(col, row)	
+			checkHorizontal(player, col, row) || 
+			checkVertical(player, col, row) ||
+			checkDiagonalAscending(player, col, row) ||
+			checkDiagonalDescending(player, col, row)	
 		){
-			gameOver();
+			eventSystem.queueEvent(new GameStatusUpdateEvent(Status.OVER));
 		}
 		
 		return false;
 	}
 
-	private boolean checkHorizontal(int col, int row){
+	private boolean checkHorizontal(CellState player, int col, int row){
 		
 		int minCheck = col - model.getWinLength()-1;
 		int maxCheck = col + model.getWinLength()-1;
@@ -63,8 +85,8 @@ public class Controller implements EventListener {
 			minCheck = 0;
 		}
 		
-		if( maxCheck > model.getCols()-1 ){
-			maxCheck = model.getCols()-1;
+		if( maxCheck > model.numOfColumns()-1 ){
+			maxCheck = model.numOfColumns()-1;
 		}
 		
 		// check winLength-in-a-row
@@ -72,7 +94,7 @@ public class Controller implements EventListener {
 		
 		for( int i = minCheck; i <= maxCheck; ++i){
 			
-			if( model.getDisc(i, row) == model.getCurrentPlayer() ){
+			if( model.getCell(i, row) == player ){
 				++winCounter;
 			} else {
 				winCounter = 0;
@@ -86,20 +108,20 @@ public class Controller implements EventListener {
 		return false;
 	}
 	
-	private boolean checkVertical(int col, int row){
+	private boolean checkVertical(CellState player, int col, int row){
 		// check downwards
-		if(row + ( model.getWinLength()-1 ) < model.getRows()){
+		if(row + ( model.getWinLength()-1 ) < model.numOfRows()){
 			if(
-				model.getDisc(col, row+1) == model.getCurrentPlayer() && 
-				model.getDisc(col, row+2) == model.getCurrentPlayer() &&
-				model.getDisc(col, row+3) == model.getCurrentPlayer()  
+				model.getCell(col, row+1) == player && 
+				model.getCell(col, row+2) == player &&
+				model.getCell(col, row+3) == player  
 			){
 			return true;
 			}
 		}
 		return false;
 	}
-	private boolean checkDiagonalAscending(int col, int row){ // diagonal-/
+	private boolean checkDiagonalAscending(CellState player, int col, int row){ // diagonal-/
 		
 		int minCheck = col - model.getWinLength()-1;
 		int maxCheck = col + model.getWinLength()-1;
@@ -115,7 +137,7 @@ public class Controller implements EventListener {
 			
 			if( isInsideBoard(x, y)){
 				
-				if( model.getDisc(x, y) == model.getCurrentPlayer() ){
+				if( model.getCell(x, y) == player ){
 					++winCounter;
 				} else {
 					winCounter = 0;
@@ -129,7 +151,7 @@ public class Controller implements EventListener {
 		return false;
 		
 	}
-	private boolean checkDiagonalDescending(int col, int row){ // diagonal-\
+	private boolean checkDiagonalDescending(CellState player, int col, int row){ // diagonal-\
 		int minCheck = col - model.getWinLength()-1;
 		int maxCheck = col + model.getWinLength()-1;
 		
@@ -144,7 +166,7 @@ public class Controller implements EventListener {
 			
 			if( isInsideBoard(x, y)){
 				
-				if( model.getDisc(x, y) == model.getCurrentPlayer() ){
+				if( model.getCell(x, y) == player ){
 					++winCounter;
 				} else {
 					winCounter = 0;
@@ -158,63 +180,61 @@ public class Controller implements EventListener {
 		return false;
 	}
 	
-	private void gameOver(){
-		System.out.println("Game over. Player " + model.getCurrentPlayer() + " won.");
-		model.setGameOver(true);
-	}
+//	private void gameOver(){
+//		System.out.println("Game over. Player " + model.getCurrentPlayer() + " won.");
+//		model.setGameOver(true);
+//	}
 	
 	private boolean isInsideBoard (int col, int row) {
 		
-		if (col >= 0 && row >= 0 && col < model.getCols() && row < model.getRows() ){
+		if (col >= 0 && row >= 0 && col < model.numOfColumns() && row < model.numOfRows() ){
 			return true;
 		}
 		
 		return false;
 	}
 	
-	@Override
-	public void handleEvent(Event event) {
-
-		switch ( event.getType() ){
+	public void insertDisc(int col, CellState player){
 		
-			case "GameStatusUpdateEvent":
-	    		this.handleGameStatusUpdateEvent( event );
-	    		break;
-    		
-			case "CellUpdateEvent":
-	    		this.handleCellUpdateEvent( event );
-	    		break;
-
-		    case "PlayerTurnEvent":
-	    		this.handlePlayerTurnEvent( event );
-	    		break;
-	    		
-		    case "PlayerUpdateEvent":
-	    		this.handlePlayerUpdateEvent( event );
-	    		break;
-	    		
-    		default: 
-    			System.out.println(event.getType() + " hasn't been handled!");
-    			break;
-		      
+		if(!isFull(col)){
+			// XXX getrowdepth in tmp_var speichern damit nicht 2x aufrufen?
+			model.setCell(col, getRowDepth(col), player );
+			this.isWinning(player, col, getRowDepth(col));
+			
 		}
-		
-	}
-
-	private void handlePlayerTurnEvent(Event event) {
-		
-	}
-
-	private void handleCellUpdateEvent(Event event) {
-		
-	}
-
-	private void handleGameStatusUpdateEvent(Event event) {
-		
 	}
 	
-	private void handlePlayerUpdateEvent(Event event) {
+	public void removeDisc(int col){
+		// TODO die oberste entfernen
+	}
+	
+	public boolean isEmpty(int col){
+		return isEmpty(col, model.numOfRows()-1); // check the lowest position of the column
+	}
+	
+	public boolean isEmpty(int col, int row){
+		return model.getCell(col, row) == CellState.EMPTY;
+	}
+	
+	public boolean isFull(){
+		
+		for( int i=0; i<model.numOfColumns(); ++i ) {
+			if( !isFull() )
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean isFull(int col){
+		return !isEmpty(col,0); // topmost position is NOT empty
+	}
+	
+	public int countConnected(CellState state, int col, int row, int dcol, int drow){
+		
+		// dcol, drow?...????
+		// FIXME return wert is immer -1
+		return -1;
+		
 		
 	}
-
 }
