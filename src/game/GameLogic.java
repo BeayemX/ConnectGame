@@ -39,7 +39,7 @@ public class GameLogic implements EventListener{
 		switch ( event.getType() ){
 		
 		    case "PlayerTurn":
-		    	System.out.println("logic: player turn");
+//		    	System.out.println("logic: player turn");
 	    		this.handlePlayerTurnEvent( (PlayerTurnEvent) event );
 	    		break;
 	    		
@@ -65,7 +65,6 @@ public class GameLogic implements EventListener{
 	private void firePlayerUpdate(){
 
 		this.currentPlayer = (this.currentPlayer == CellState.PLAYER_ONE) ? CellState.PLAYER_TWO : CellState.PLAYER_ONE;
-		System.out.println("aaaa"+currentPlayer);
 		this.eventSystem.queueEvent(new PlayerUpdateEvent(currentPlayer));
 	}
 	private void fireWon(int player){

@@ -6,13 +6,14 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import eventSystem.Event;
+import eventSystem.EventListener;
 import eventSystem.EventSystem;
 import eventSystem.events.CellUpdateEvent;
 import eventSystem.events.GameStatusUpdateEvent;
 import eventSystem.events.PlayerTurnEvent;
 import eventSystem.events.PlayerUpdateEvent;
 
-public class ConsoleView extends View {
+public class ConsoleView implements EventListener {
 	
 	private CellState player;
 	
@@ -45,6 +46,10 @@ public class ConsoleView extends View {
 //		}
 //
 //		System.out.println();
+		for(int i = 0; i < memento.getCol(); ++i){
+			System.out.print(i + " ");	
+		}
+		System.out.println();
 		for(int row = 0; row < memento.getRow(); ++row){
 			for(int col = 0; col < memento.getCol(); ++col){
 				String icon = "";
@@ -107,17 +112,17 @@ public class ConsoleView extends View {
 		switch ( event.getType() ){
 		
 			case "GameStatusUpdate":
-				System.out.println("gamestatusupdate");
+//				System.out.println("gamestatusupdate");
 	    		this.handleGameStatusUpdateEvent( (GameStatusUpdateEvent) event );
 	    		break;
     		
 			case "CellUpdate":
-				System.out.println("view: cellupdate");
+//				System.out.println("view: cellupdate");
 	    		this.handleCellUpdateEvent( (CellUpdateEvent) event );
 	    		break;
 	    		
 		    case "PlayerUpdate":
-		    	System.out.println("view: playerUpdate");
+//		    	System.out.println("view: playerUpdate");
 	    		this.handlePlayerUpdateEvent( (PlayerUpdateEvent) event );
 	    		break;
 	    		

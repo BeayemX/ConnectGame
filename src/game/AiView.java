@@ -1,12 +1,22 @@
 package game;
 
-public class AiView extends View {
+import eventSystem.Event;
+import eventSystem.EventListener;
 
+public class AiView implements EventListener {
+
+	@Override
+	public void handleEvent(Event event) {
+		// TODO Auto-generated method stub
+		
+	}
+/*
 	private Evaluator evaluator = new Evaluator(this.model);
+	private Model model;
 	private int infinite = 10000;
 	
 	public AiView(Model m) {
-		super(m);
+		this.model = m;
 	}
 
 	@Override
