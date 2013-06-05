@@ -5,11 +5,14 @@ import eventSystem.EventListener;
 import eventSystem.EventSystem;
 import eventSystem.events.CellUpdateEvent;
 import eventSystem.events.GameStatusUpdateEvent;
+import eventSystem.events.PlayerTurnEvent;
 import eventSystem.events.PlayerUpdateEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.GroupBuilder;
 import javafx.scene.Scene;
 import javafx.scene.SceneBuilder;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CircleBuilder;
@@ -23,6 +26,7 @@ public class GUIView implements EventListener {
 	// FIXME magic numbers
 	private Circle[][] circles = new Circle[7][5];
 	private static int deleteMeCounter = 0;
+	private CellState currentPlayer = CellState.PLAYER_ONE;
 	
 	public GUIView() {
 	}
@@ -36,6 +40,7 @@ public class GUIView implements EventListener {
 		// FIXME magic numbers		
 		for (int i = 0; i < circles.length; ++i) {
 			for (int j = 0; j < circles[i].length; j++) {
+				final int col=i;
 				Circle circle = CircleBuilder.create()
 						.centerX(i * radius*2 + radius)
 						.centerY(j * radius*2 + radius)
@@ -43,6 +48,15 @@ public class GUIView implements EventListener {
 						.fill(Color.WHITE)
 						.stroke(Color.BLACK)
 						.build();
+				circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						System.out.println(col);
+						EventSystem.getInstance().queueEvent( new PlayerTurnEvent(currentPlayer, col));
+					}
+				});
+
+				circles[i][j] = circle;
 				root.getChildren().add(circle);
 			}			
 		}
@@ -67,7 +81,7 @@ public class GUIView implements EventListener {
 	
 
 	public void drawBoard(MementoBoard memento){
-		System.out.println("zeichen");
+//		System.out.println("zeichen");
 		for(int i = 0; i<memento.getRow(); ++i) {
 			for(int j = 0; j < memento.getRow(); ++j) {
 				Circle circle = CircleBuilder.create().centerX(i).centerY(j).radius(2d).build();
@@ -119,9 +133,8 @@ public class GUIView implements EventListener {
 				if((i+j) % 2 == 0) {
 					// XXX work in progress... kA warum da ein null pointer is
 //					wollt nur ausprobiern ob ma so ueberhaupt die circle verändern kann
-//					es wird eine endlosschleife an cellupdateds geworfen
-//					circles[j][i].setCenterX(0);
-					System.out.print(j + " " + i + ";");
+//					es wird eine endlosschleife an cellupdate geworfen
+					circles[i][j].setFill(Color.RED);
 				}
 			}
 		}
