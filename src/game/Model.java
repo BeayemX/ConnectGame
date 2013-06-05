@@ -35,7 +35,6 @@ public class Model {
 //		TODO in view ausgeben
 //		System.out.println("Disc set at "+col+"|"+row);
 		this.board[col][row] = player;
-		
 		eventSystem.EventSystem.getInstance().queueEvent( new CellUpdateEvent(this.saveToMemento()));
 		
 	}
@@ -169,6 +168,7 @@ public class Model {
 				board[col][row] = memento.nextCell();;
 			}	
 		}
+		this.board = board;
 		
 	}
 	

@@ -62,14 +62,14 @@ public class Controller  {
 	}
 	
 	private boolean isWinning(CellState player, int col, int row){
-		
 		// we dont have to check the (col, row) because there has to be currentPlayer because he set the disc there
 		if(
-			checkHorizontal(player, col, row) || 
-			checkVertical(player, col, row) ||
-			checkDiagonalAscending(player, col, row) ||
-			checkDiagonalDescending(player, col, row)	
+			checkHorizontal	(player, col, row)			|| 
+			checkVertical	(player, col, row) 			||
+			checkDiagonalAscending	(player, col, row) 	||
+			checkDiagonalDescending	(player, col, row)	
 		){
+			System.out.println("gewonnen");
 			eventSystem.queueEvent(new GameStatusUpdateEvent(Status.OVER));
 		}
 		
@@ -77,7 +77,7 @@ public class Controller  {
 	}
 
 	private boolean checkHorizontal(CellState player, int col, int row){
-		
+
 		int minCheck = col - model.getWinLength()-1;
 		int maxCheck = col + model.getWinLength()-1;
 
@@ -96,15 +96,16 @@ public class Controller  {
 			
 			if( model.getCell(i, row) == player ){
 				++winCounter;
+				System.out.println("++");
 			} else {
 				winCounter = 0;
 			}
-			
 			if( winCounter == model.getWinLength() ){
 				return true;
 			}
 			
 		}
+
 		return false;
 	}
 	
@@ -112,11 +113,12 @@ public class Controller  {
 		// check downwards
 		if(row + ( model.getWinLength()-1 ) < model.numOfRows()){
 			if(
+//					FIXME muss ich da auch das aktuelle feld mit einbeziehen?
 				model.getCell(col, row+1) == player && 
 				model.getCell(col, row+2) == player &&
 				model.getCell(col, row+3) == player  
 			){
-			return true;
+				return true;
 			}
 		}
 		return false;

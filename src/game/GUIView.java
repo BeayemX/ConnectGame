@@ -18,6 +18,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.CircleBuilder;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.RectangleBuilder;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBuilder;
 import javafx.stage.Stage;
 
 
@@ -25,8 +27,10 @@ public class GUIView implements EventListener {
 	
 	// FIXME magic numbers
 	private Circle[][] circles = new Circle[7][5];
-	private static int deleteMeCounter = 0;
 	private CellState currentPlayer = CellState.PLAYER_ONE;
+	// FIXME magic numbers
+	private Model model = new Model(7, 5);
+	private Text text;
 	
 	public GUIView() {
 	}
@@ -51,7 +55,6 @@ public class GUIView implements EventListener {
 				circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
 					@Override
 					public void handle(MouseEvent mouseEvent) {
-						System.out.println(col);
 						EventSystem.getInstance().queueEvent( new PlayerTurnEvent(currentPlayer, col));
 					}
 				});
@@ -61,6 +64,11 @@ public class GUIView implements EventListener {
 			}			
 		}
 		
+		text = TextBuilder.create().text(""+this.currentPlayer)
+				.x(50)
+				.y(350)
+				.build();
+		root.getChildren().add(text);
 		
 		Scene scene = SceneBuilder.create()
 				.width(400)
@@ -74,21 +82,21 @@ public class GUIView implements EventListener {
 		stage.show();		
 	}
 	
-	public void getInput(){
-		
-	}
+//	public void getInput(){
+//		
+//	}
 		
 	
-
-	public void drawBoard(MementoBoard memento){
-//		System.out.println("zeichen");
-		for(int i = 0; i<memento.getRow(); ++i) {
-			for(int j = 0; j < memento.getRow(); ++j) {
-				Circle circle = CircleBuilder.create().centerX(i).centerY(j).radius(2d).build();
-			}
-			
-		}
-	}
+//
+//	public void drawBoard(MementoBoard memento){
+////		System.out.println("zeichen");
+//		for(int i = 0; i<memento.getRow(); ++i) {
+//			for(int j = 0; j < memento.getRow(); ++j) {
+////				Circle circle = CircleBuilder.create().centerX(i).centerY(j).radius(2d).build();
+//			}
+//			
+//		}
+//	}
 	
 	
 	
@@ -122,21 +130,28 @@ public class GUIView implements EventListener {
 	}
 
 	private void handleCellUpdateEvent(CellUpdateEvent event) {
-		// neu zeichnen / darstellen
-		this.drawBoard( (MementoBoard) event.getMemento());
 		
-		// XXX kein rekursionsanker
-		EventSystem.getInstance().queueEvent(new CellUpdateEvent(event.getMemento()));
+		this.model.restoreFromMemento((MementoBoard) event.getMemento());
 		
-		for (int i = 0; i < circles.length; ++i) {
-			for (int j = 0; j < circles[i].length; ++j) {
-				if((i+j) % 2 == 0) {
-					// XXX work in progress... kA warum da ein null pointer is
-//					wollt nur ausprobiern ob ma so ueberhaupt die circle verändern kann
-//					es wird eine endlosschleife an cellupdate geworfen
-					circles[i][j].setFill(Color.RED);
+		for (int row = 0; row < circles.length; ++row) {
+
+			for (int col = 0; col < circles[0].length; ++col) {
+								
+				switch (model.getCell(row, col)){
+				
+					case PLAYER_ONE:
+						circles[row][col].setFill(Color.RED);
+						break;
+					case PLAYER_TWO:
+						circles[row][col].setFill(Color.YELLOW);
+						break;
+//					case EMPTY:
+//						break;
+						
 				}
+				
 			}
+			
 		}
 		
 		
@@ -156,10 +171,9 @@ public class GUIView implements EventListener {
 	
 	private void handlePlayerUpdateEvent(PlayerUpdateEvent event)  {
 
-//		this.drawBoard();
-		// spieler wechseln anzeigen / bzw das ma auf input wartet
-//		this.player = event.getPlayer();
-
+		this.currentPlayer = event.getPlayer(); 
+		this.text.setText(this.currentPlayer+"");
+		
 	}	
 
 }

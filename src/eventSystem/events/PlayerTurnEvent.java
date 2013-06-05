@@ -14,10 +14,6 @@ public class PlayerTurnEvent extends Event {
 		this.player = player;
 		this.turn = turn;
 	}
-
-//	public CellState getPlayer() {
-//		return player;
-//	}
 	
 	public CellState getPlayer() {
 		return player;
