@@ -169,6 +169,7 @@ public class Model {
 			}	
 		}
 		this.board = board;
+		memento.reset();
 		
 	}
 	
