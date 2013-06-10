@@ -31,6 +31,11 @@ public class GUIView implements EventListener {
 	// FIXME magic numbers
 	private Model model = new Model(7, 5);
 	private Text text;
+
+	Color COLOR_EMPTY = Color.WHITE;
+	Color COLOR_OUTLINE = Color.BLACK;
+	Color COLOR_PLAYER_ONE = Color.RED;
+	Color COLOR_PLAYER_TWO = Color.YELLOW;
 	
 	public GUIView() {
 	}
@@ -49,8 +54,8 @@ public class GUIView implements EventListener {
 						.centerX(i * radius*2 + radius)
 						.centerY(j * radius*2 + radius)
 						.radius(radius)
-						.fill(Color.WHITE)
-						.stroke(Color.BLACK)
+						.fill(COLOR_EMPTY)
+						.stroke(COLOR_OUTLINE)
 						.build();
 				circle.setOnMouseClicked(new EventHandler<MouseEvent>() {
 					@Override
@@ -71,7 +76,7 @@ public class GUIView implements EventListener {
 		root.getChildren().add(text);
 		
 		Scene scene = SceneBuilder.create()
-				.width(400)
+				.width(600)
 				.height(400)
 				.root(root)
 				.build();
@@ -132,7 +137,7 @@ public class GUIView implements EventListener {
 	private void handleCellUpdateEvent(CellUpdateEvent event) {
 		
 		this.model.restoreFromMemento((MementoBoard) event.getMemento());
-		
+		// XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX nur eins ändern, nicht alle?
 		for (int row = 0; row < circles.length; ++row) {
 
 			for (int col = 0; col < circles[0].length; ++col) {
@@ -140,10 +145,10 @@ public class GUIView implements EventListener {
 				switch (model.getCell(row, col)){
 				
 					case PLAYER_ONE:
-						circles[row][col].setFill(Color.RED);
+						circles[row][col].setFill(COLOR_PLAYER_ONE);
 						break;
 					case PLAYER_TWO:
-						circles[row][col].setFill(Color.YELLOW);
+						circles[row][col].setFill(COLOR_PLAYER_TWO);
 						break;
 //					case EMPTY:
 //						break;
@@ -159,6 +164,25 @@ public class GUIView implements EventListener {
 
 	private void handleGameStatusUpdateEvent(GameStatusUpdateEvent event) {
 
+		if(event.getStatus() == Status.OVER) {
+			System.out.println(currentPlayer + " hat gewonnen");
+		}
+		else if(event.getStatus() == Status.DRAW) {
+			System.out.println("unentschieden");
+		}
+		
+		if(event.getStatus() == Status.DRAW || event.getStatus() == Status.OVER) {
+			for (int row = 0; row < circles.length; ++row) {
+
+				for (int col = 0; col < circles[0].length; ++col) {
+					
+					circles[row][col].setFill(COLOR_EMPTY);
+					
+				}
+				
+			}
+			
+		}
 //		this.drawBoard();
 		
 ////		print game over

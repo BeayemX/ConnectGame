@@ -12,25 +12,26 @@ public class GameLogic implements EventListener{
 	
 	private EventSystem eventSystem = EventSystem.getInstance();
 	private Model 		model;
+	private MementoBoard emptyMementoBoard;
 	private Controller 	controller;
 	private CellState 	currentPlayer;
 	private Status 		endOfGame = Status.ONGOING;
 	
 	
-	GameLogic (Model model, Controller controller){
+	public GameLogic (Model model, Controller controller){
 		this.model 		= model;
+		emptyMementoBoard = (MementoBoard) model.saveToMemento();
 		this.controller	= controller; 
 	}
 
-//	public MementoBoard getMemento(){
-//		return new MementoBoard();
-//	}
-
 	
 	public void startNewGame(){
+
+		this.model.restoreFromMemento(emptyMementoBoard);
 		fireCellUpdate();
-		firePlayerUpdate();
-		// TODO erstellen
+		
+		EventSystem.getInstance().queueEvent(new GameStatusUpdateEvent(Status.ONGOING));
+		
 	}
 	
 	@Override
@@ -43,6 +44,15 @@ public class GameLogic implements EventListener{
 	    		this.handlePlayerTurnEvent( (PlayerTurnEvent) event );
 	    		break;
 	    		
+		    case "GameStatusUpdate":
+		    	this.handleGameStatusUpdate( (GameStatusUpdateEvent) event );
+		    	break;
+		    	
+		    case "CellUpdate":
+
+				firePlayerUpdate();
+				break;
+				
     		default: 
 //    			System.out.println(event.getType() + " hasn't been handled in GameLogic!");
     			break;
@@ -51,10 +61,19 @@ public class GameLogic implements EventListener{
 		
 	}
 
+	private void handleGameStatusUpdate(GameStatusUpdateEvent event) {
+		
+		if(event.getStatus() == Status.DRAW || event.getStatus() == Status.OVER) {
+			
+			this.startNewGame();
+			
+		}
+		
+	}
+
 	private void handlePlayerTurnEvent(PlayerTurnEvent event) {
 		// zug der gemacht werden will
-		controller.insertDisc(event.getTurn(), event.getPlayer() );
-		firePlayerUpdate();
+		controller.insertDisc(event.getTurn(), event.getPlayer() );
 	}
 	
 	private void fireCellUpdate(){		

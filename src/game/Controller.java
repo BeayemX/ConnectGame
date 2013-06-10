@@ -53,11 +53,13 @@ public class Controller  {
 	// get lowest possible position in the specific col
 	public int getRowDepth(int col){
 		// XXX Memento?
-		for (int row = 1; row < model.numOfRows(); ++row){
+		for (int row = 0; row < model.numOfRows(); ++row){
 			if (model.getCell(col, row) != CellState.EMPTY){
+//				FIXME warum -1? weil bei check horizontal muss ich wieder +1
 				return row-1;
 			}
 		}
+//		FIXME warum -1? weil bei check horizontal muss ich wieder +1
 		return model.numOfRows()-1; // if whole col is empty, return the lowest position
 	}
 	
@@ -69,7 +71,6 @@ public class Controller  {
 			checkDiagonalAscending	(player, col, row) 	||
 			checkDiagonalDescending	(player, col, row)	
 		){
-			System.out.println("gewonnen");
 			eventSystem.queueEvent(new GameStatusUpdateEvent(Status.OVER));
 		}
 		
@@ -78,8 +79,8 @@ public class Controller  {
 
 	private boolean checkHorizontal(CellState player, int col, int row){
 
-		int minCheck = col - model.getWinLength()-1;
-		int maxCheck = col + model.getWinLength()-1;
+		int minCheck = col - (model.getWinLength()-1);
+		int maxCheck = col + (model.getWinLength()-1);
 
 		if( minCheck < 0 ){
 			minCheck = 0;
@@ -88,18 +89,18 @@ public class Controller  {
 		if( maxCheck > model.numOfColumns()-1 ){
 			maxCheck = model.numOfColumns()-1;
 		}
-		
+	
 		// check winLength-in-a-row
 		int winCounter = 0;
 		
 		for( int i = minCheck; i <= maxCheck; ++i){
-			
-			if( model.getCell(i, row) == player ){
+			// FIXME warum row+1? problem: er erkentn die ganz oberste reihe nicht mehr... weil -1
+			if( model.getCell(i, row+1) == player ){
 				++winCounter;
-				System.out.println("++");
 			} else {
 				winCounter = 0;
 			}
+	
 			if( winCounter == model.getWinLength() ){
 				return true;
 			}
@@ -110,13 +111,19 @@ public class Controller  {
 	}
 	
 	private boolean checkVertical(CellState player, int col, int row){
+
+//		TODO das muesste doch auch funktionieren wenn man das aktuell gesetzen feld nicht ueberprueft, weil da
+//		ohnehin der aktuelle spieler drin steht...
+//		dann koennte man auch mode.getwinlength()-1 verwenden, oder?
+		
 		// check downwards
-		if(row + ( model.getWinLength()-1 ) < model.numOfRows()){
+		if(row + ( model.getWinLength() ) < model.numOfRows()){
+			
 			if(
-//					FIXME muss ich da auch das aktuelle feld mit einbeziehen?
 				model.getCell(col, row+1) == player && 
-				model.getCell(col, row+2) == player &&
-				model.getCell(col, row+3) == player  
+				model.getCell(col, row+2) == player && 
+				model.getCell(col, row+3) == player &&
+				model.getCell(col, row+4) == player  
 			){
 				return true;
 			}
@@ -125,19 +132,19 @@ public class Controller  {
 	}
 	private boolean checkDiagonalAscending(CellState player, int col, int row){ // diagonal-/
 		
-		int minCheck = col - model.getWinLength()-1;
-		int maxCheck = col + model.getWinLength()-1;
-		
 		// check winLength-in-a-row
 		int winCounter = 0;
 		int x = 0;
 		int y = 0;
 		
-		for( int i = minCheck; i <= maxCheck; ++i){
-			x = col - i;
-			y = row + i;
+		for( int i = -model.getWinLength()-1; i < model.getWinLength(); ++i){
 			
+			x = col + i;
+			// FIXME wtf?? i+1??
+			y = row - i + 1;
+		
 			if( isInsideBoard(x, y)){
+	
 				
 				if( model.getCell(x, y) == player ){
 					++winCounter;
@@ -148,38 +155,44 @@ public class Controller  {
 				if( winCounter == model.getWinLength() ){
 					return true;
 				}
-			}			
+
+			} 
+			
 		}
 		return false;
 		
 	}
 	private boolean checkDiagonalDescending(CellState player, int col, int row){ // diagonal-\
-		int minCheck = col - model.getWinLength()-1;
-		int maxCheck = col + model.getWinLength()-1;
-		
+
 		// check winLength-in-a-row
 		int winCounter = 0;
 		int x = 0;
 		int y = 0;
 		
-		for( int i = minCheck; i <= maxCheck; ++i){
-			x = col - i;
-			y = row - i;
+		for( int i = -model.getWinLength()-1; i < model.getWinLength(); ++i){
 			
+			x = col + i;
+			// FIXME wtf?? i+1??
+			y = row + i + 1;
+	
 			if( isInsideBoard(x, y)){
+
 				
 				if( model.getCell(x, y) == player ){
 					++winCounter;
 				} else {
 					winCounter = 0;
 				}
-				
+								
 				if( winCounter == model.getWinLength() ){
 					return true;
 				}
-			}
+				
+			} 
+			
 		}
 		return false;
+		
 	}
 	
 //	private void gameOver(){
@@ -202,7 +215,9 @@ public class Controller  {
 			// XXX getrowdepth in tmp_var speichern damit nicht 2x aufrufen?
 			model.setCell(col, getRowDepth(col), player );
 			this.isWinning(player, col, getRowDepth(col));
-			
+		} 
+		if ( isFull() ){
+			EventSystem.getInstance().queueEvent(new GameStatusUpdateEvent(Status.DRAW));
 		}
 	}
 	
@@ -221,7 +236,7 @@ public class Controller  {
 	public boolean isFull(){
 		
 		for( int i=0; i<model.numOfColumns(); ++i ) {
-			if( !isFull() )
+			if( !isFull(i) )
 				return false;
 		}
 		return true;
@@ -232,7 +247,7 @@ public class Controller  {
 	}
 	
 	public int countConnected(CellState state, int col, int row, int dcol, int drow){
-		
+		// TODO method not used
 		// dcol, drow?...????
 		// FIXME return wert is immer -1
 		return -1;

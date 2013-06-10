@@ -59,17 +59,7 @@ public class MainGame extends Application {
 		
 		logic.startNewGame();
 
-		
-		
-//		while (!logic.isEndOfGame()) {
-//			
-//			eventSystem.update();
-//			
-//			if (logic.isEndOfGame()) {
-//				logic.startNewGame();
-//			}
-//			
-//		}
+
 		
 	}
 	
